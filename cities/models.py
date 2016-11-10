@@ -81,7 +81,7 @@ class BaseContinent(Place, SlugModel):
         abstract = True
 
     def slugify(self):
-        return slugify_func(self, self.name)
+        return slugify_func(self, self.name.encode('utf-8'))
 
 
 class Continent(BaseContinent):
@@ -123,7 +123,7 @@ class BaseCountry(Place, SlugModel):
         self.tld = self.tld.lower()
 
     def slugify(self):
-        return slugify_func(self, self.name)
+        return slugify_func(self, self.name.encode('utf-8'))
 
 
 class Country(BaseCountry):
@@ -146,8 +146,8 @@ class Region(Place, SlugModel):
 
     def slugify(self):
         return slugify_func(self, '{}_({})'.format(
-            unicode(self.name),
-            unicode(self.full_code())))
+            unicode(self.name.encode('utf-8')),
+            unicode(self.full_code().encode('utf-8'))))
 
 
 class Subregion(Place, SlugModel):
@@ -163,7 +163,9 @@ class Subregion(Place, SlugModel):
         return ".".join([self.parent.parent.code, self.parent.code, self.code])
 
     def slugify(self):
-        return slugify_func(self, unicode('{}_({})').format(self.name, self.full_code()))
+        return slugify_func(self, unicode('{}_({})').format(
+            self.name.encode('utf-8'),
+            self.full_code().encode('utf-8')))
 
 
 class BaseCity(Place, SlugModel):

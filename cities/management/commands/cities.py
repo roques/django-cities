@@ -56,6 +56,11 @@ from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
 
+# Interpret all files as utf-8
+if sys.version_info < (3,):
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
 # Load swappable models
 Continent = load_model('cities', 'Continent')
 Country = load_model('cities', 'Country')
@@ -205,7 +210,8 @@ class Command(BaseCommand):
 
             for row in file_obj:
                 if not row.startswith('#'):
-                    yield dict(list(zip(settings.files[filekey]['fields'], row.split("\t"))))
+                    yield dict(list(zip(settings.files[filekey]['fields'],
+                                        row.rstrip('\n').split("\t"))))
 
     def parse(self, data):
         for line in data:
